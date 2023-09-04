@@ -12,8 +12,8 @@ export class UserService {
  
     }
 
-    async getUserByNumber(number:number):Promise<User>{
-        return this.userRepository.findOne({ number })
+    async getUserByNumber(phone:number):Promise<User>{
+        return this.userRepository.findOne({ phone })
     }
     async getUsers():Promise<User[]>{
         return this.userRepository.find({})
@@ -38,13 +38,6 @@ export class UserService {
     //     return this.userRepository.findOneAndUpdate({name},userUpdates)
     // }
 
-
-    // findOne(id:string){
-    //     return ({
-    //         id:id
-    //     })
-
-    // }
 
     // create(createUserDto:CreateUserDto){
     //     return "the user is being created "
