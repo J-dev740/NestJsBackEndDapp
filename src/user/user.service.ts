@@ -12,8 +12,8 @@ export class UserService {
  
     }
 
-    async getUserByName(name:string):Promise<User>{
-        return this.userRepository.findOne({ name })
+    async getUserByNumber(number:number):Promise<User>{
+        return this.userRepository.findOne({ number })
     }
     async getUsers():Promise<User[]>{
         return this.userRepository.find({})

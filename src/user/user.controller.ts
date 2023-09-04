@@ -6,63 +6,182 @@ import { CommentService } from 'src/comment/comment.service';
 import{ethers} from 'ethers';
 import { User } from './schemas/user.schema';
 // import { Query } from 'mongoose';
-const Abi= [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "contactInfo",
-          "type": "uint256"
-        }
-      ],
-      "name": "storeContact",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "contactNo",
-          "type": "uint256"
-        }
-      ],
-      "name": "Store",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "i_owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]
+// const Abi= [
+//     {
+//       "inputs": [],
+//       "stateMutability": "nonpayable",
+//       "type": "constructor"
+//     },
+//     {
+//       "anonymous": false,
+//       "inputs": [
+//         {
+//           "indexed": false,
+//           "internalType": "string",
+//           "name": "name",
+//           "type": "string"
+//         },
+//         {
+//           "indexed": false,
+//           "internalType": "uint256",
+//           "name": "contactInfo",
+//           "type": "uint256"
+//         }
+//       ],
+//       "name": "storeContact",
+//       "type": "event"
+//     },
+//     {
+//       "inputs": [
+//         {
+//           "internalType": "string",
+//           "name": "name",
+//           "type": "string"
+//         },
+//         {
+//           "internalType": "uint256",
+//           "name": "contactNo",
+//           "type": "uint256"
+//         }
+//       ],
+//       "name": "Store",
+//       "outputs": [],
+//       "stateMutability": "nonpayable",
+//       "type": "function"
+//     },
+//     {
+//       "inputs": [],
+//       "name": "i_owner",
+//       "outputs": [
+//         {
+//           "internalType": "address",
+//           "name": "",
+//           "type": "address"
+//         }
+//       ],
+//       "stateMutability": "view",
+//       "type": "function"
+//     }
+//   ]
+const Abi=  
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "contactInfo",
+        "type": "uint256"
+      }
+    ],
+    "name": "contactRemoved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "contactInfo",
+        "type": "uint256"
+      }
+    ],
+    "name": "storeContact",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "contactNo",
+        "type": "uint256"
+      }
+    ],
+    "name": "RemoveContact",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "contactNo",
+        "type": "uint256"
+      }
+    ],
+    "name": "Store",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "UserToContact",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "i_owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
 const iface= new ethers.Interface(Abi)
 
 
@@ -85,9 +204,10 @@ export class UserController {
 
 
 
-    @Get(':name')
-    async getUser(@Param('name') name:string):Promise<User>{
-      return this.userService.getUserByName(name);
+    @Get(':number')
+    async getUser(@Param('number') phoneNumber:number):Promise<User>{
+      console.log(phoneNumber)
+      return this.userService.getUserByNumber(phoneNumber);
     }
     @Get()
     async getUsers():Promise<User[]>{
@@ -96,6 +216,7 @@ export class UserController {
 
     @Delete()
     async deleteUser(@Query('name') name:string, @Query('phone') phone:number):Promise<User>{
+      console.log('delete request received....')
       return this.userService.DeleteUser(name,phone)
     }
     // findAll(@Param('id') id:string){
@@ -115,9 +236,15 @@ export class UserController {
     async create(@Body() body:StreamTypes.IWebhook){
         // return `this route is for posting a user ${body.name}`
         console.log('post request received...\n')
+        // console.log(body.logs)
+        // return 
         console.log('------------------------------------------------------------------------------->')
         if(!body.confirmed){
             // console.log(body)
+            // if(body.abi[0].name=="removeContact"){
+            //   console.log('removeContactEventEmitted.......')
+            //   return
+            
             const logData=body.logs[0].data
             const topic0=body.logs[0].topic0
             const decodedLog=iface.parseLog({
@@ -125,9 +252,20 @@ export class UserController {
                 data:logData
 
             })
+            // console.log(decodedLog)
+            console.log('------------------------------>')
             console.log(decodedLog.args[0])
             console.log(ethers.toNumber(decodedLog.args[1]))
-            return this.userService.createUser(decodedLog.args[0],ethers.toNumber(decodedLog.args[1]))
+            if(decodedLog.name=='contactRemoved'){
+              console.log('contactRemoved Event emitted ...removing contact')
+              // return this.userService.DeleteUser(decodedLog.args[0],ethers.toNumber(decodedLog.args[1]))
+              return
+            }else if(decodedLog.name=='storeContact'){
+              console.log('store event emitted... storing details')
+              return this.userService.createUser(decodedLog.args[0],ethers.toNumber(decodedLog.args[1]))
+            }else{
+              console.log('Oops ! something went wrong...try again')
+            }
         }
 
 
@@ -142,12 +280,4 @@ export class UserController {
     //     // return body
     // }
 
-    @Get(':id/comments')
-    getUserComment(@Param('id') id:string){
-
-        return (
-            this.commentService.findUserComments(id)
-        )
-
-    }
 }
